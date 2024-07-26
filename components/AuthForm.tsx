@@ -22,6 +22,7 @@ import { authFormSchema } from "@/lib/utils";
 import { Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { getLoggedInUser, signIn, signUp } from "@/lib/actions/user.actions";
+import PlaidLink from "./PlaidLink";
 
 const AuthForm = ({ type }: { type: string }) => {
   const router = useRouter();
@@ -44,7 +45,19 @@ const AuthForm = ({ type }: { type: string }) => {
       // sign up with appwrite & create plain link token
 
       if (type === "sign-up") {
-        const newUser = await signUp(data);
+        const userData = {
+          firstName: data.firstName!,
+          lastName: data.lastName!,
+          address1: data.address1!,
+          city: data.city!,
+          state: data.state!,
+          postalCode: data.postalCode!,
+          dateOfBirth: data.dateOfBirth!,
+          ssn: data.ssn!,
+          email: data.email,
+          password: data.password,
+        };
+        const newUser = await signUp(userData);
         setUser(newUser);
       }
       if (type === "sign-in") {
@@ -85,7 +98,10 @@ const AuthForm = ({ type }: { type: string }) => {
         </div>
       </header>
       {user ? (
-        <div className="flex flex-col gap-4">{/* PlaidLink */}</div>
+        <div className="flex flex-col gap-4">
+          {" "}
+          <PlaidLink user={user} variant="primary" />{" "}
+        </div>
       ) : (
         <>
           <Form {...form}>
@@ -109,7 +125,7 @@ const AuthForm = ({ type }: { type: string }) => {
 
                   <CustomInput
                     control={form.control}
-                    name="adress1"
+                    name="address1"
                     label="Adresse"
                     placeholder="Saisissez votre adresse"
                   />
